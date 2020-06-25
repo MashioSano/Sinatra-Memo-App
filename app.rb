@@ -64,7 +64,6 @@ def write_json_file(memos)
   end
 end
 
-
 helpers do
   def link_to(txt, url)
     %(<a href="#{url}">#{txt}</a>)
