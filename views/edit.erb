@@ -1,0 +1,12 @@
+<p>メモ編集</p>
+  <form action="/memos/<%= params[:id] %>" method="post">
+      <div class="form-group">
+    <label>メモ</label>
+    <textarea class="form-control" rows="7" name="text" placeholder="1行目がメモのタイトルになります"><%= @memo["title"]%><%= @memo["description"]%></textarea>
+  </div>
+    <div>
+      <input type="hidden" name="_method" value="patch"> 
+      <input type="submit" value="編集する" class="btn btn-success">
+    </div>
+  </form>
+</body>
