@@ -9,14 +9,14 @@ get '/memos' do
   erb :index
 end
 
+get '/memos/new' do
+  erb :new
+end
+
 get '/memos/:id' do
   memos = read_json_file
   @memo = memos[params[:id]]
   erb :show
-end
-
-get '/memos/new' do
-  erb :new
 end
 
 post '/memos' do
