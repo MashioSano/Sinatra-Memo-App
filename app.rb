@@ -2,7 +2,7 @@
 
 require 'sinatra'
 require 'sinatra/reloader'
-require_relative './models/memo.rb'
+require_relative 'models/memo.rb'
 
 get '/memos' do
   @memos = read_json_file
