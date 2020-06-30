@@ -11,3 +11,5 @@ gem 'sinatra-contrib'
 gem 'redcarpet'
 
 gem 'puma'
+
+gem 'pg'

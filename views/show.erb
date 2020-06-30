@@ -1,6 +1,6 @@
 <div class="mb-3">
-  <p class="title"><%= @memo["title"] %></p>
-  <p><%= @memo["description"] %></p>
+  <p class="title"><%= h @memo.title %></p>
+  <p><%= h @memo.description %></p>
 </div>
 
 <form class="d-inline-block" method="post" action="/memos/<%=params[:id]%>">
