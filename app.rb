@@ -20,7 +20,8 @@ get '/memos/:id' do
 end
 
 post '/memos' do
-  Memo.create(params[:text])
+  redirect to('/memos') if params[:text] == ''
+  Memo.create(title: extract_title(params[:text]), description: extract_description(params[:text]))
   redirect to('/memos')
 end
 
@@ -30,13 +31,22 @@ get '/memos/:id/edit' do
 end
 
 patch '/memos/:id' do
-  Memo.update(params[:text], params[:id])
+  redirect to('/memos') if params[:text] == ''
+  Memo.find(params[:id]).update(title: extract_title(params[:text]), description: extract_description(params[:text]))
   redirect to('/memos')
 end
 
 delete '/memos/:id' do
-  Memo.delete(params[:id])
+  Memo.find(params[:id]).delete
   redirect to('/memos')
+end
+
+def extract_title(params)
+  params.split("\n")[0].strip
+end
+
+def extract_description(params)
+  params.split("\n")[1..-1].join("\n").strip
 end
 
 helpers do

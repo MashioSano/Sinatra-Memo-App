@@ -11,58 +11,40 @@ Dotenv.load
 class Memo
   attr_accessor :title, :description, :id
 
-  def initialize(text, id = nil)
-    @title = split_text(text, title)
-    @description = split_text(text, description)
+  @@connection = PG.connect(host: ENV['HOST'], user: ENV['USER'], password: ENV['PASSWORD'], dbname: ENV['DBNAME'], port: ENV['PORT'])
+
+  def initialize(title:, description:, id:)
+    @title = title
+    @description = description
     @id = id
   end
 
-  def split_text(text, option)
-    description_list = text.split("\n")
-    if option == title
-      description_list[0]
-    else
-      description_list[1..-1].join("\n")
-    end
-  end
-
-  def self.execute_sql(sql, params)
-    connection = PG.connect(host: ENV['HOST'], user: ENV['USER'], password: ENV['PASSWORD'], dbname: ENV['DBNAME'], port: ENV['PORT'])
-    connection.exec_params(sql, params)
-  ensure
-    connection.finish
-  end
-
   def self.all
-    result = execute_sql("SELECT * FROM #{ENV['TABLENAME']} ORDER BY ID DESC", nil)
+    result = @@connection.exec_params('SELECT * FROM memo ORDER BY ID DESC', nil)
     result.map do |r|
-      Memo.new([r['title'], r['description']].join("\n"), r['id'])
+      Memo.new(title: r['title'], description: r['description'], id: r['id'])
     end
   end
 
   def self.find(id)
-    result = execute_sql("SELECT * FROM #{ENV['TABLENAME']} WHERE id = $1", [id])
-    text = [result[0]['title'], result[0]['description']].join("\n")
-    Memo.new(text, result[0]['id'])
+    result = @@connection.exec_params('SELECT * FROM memo WHERE id = $1', [id])
+    Memo.new(title: result[0]['title'], description: result[0]['description'], id: result[0]['id'])
   end
 
-  def self.create(text)
-    memo = Memo.new(text)
-    sql = "INSERT INTO #{ENV['TABLENAME']} (title, description) VALUES($1, $2)"
-    params = [memo.title, memo.description]
-    execute_sql(sql, params)
+  def self.create(title:, description:)
+    sql = 'INSERT INTO memo (title, description) VALUES($1, $2)'
+    params = [title, description]
+    @@connection.exec_params(sql, params)
   end
 
-  def self.delete(id)
-    sql = "DELETE FROM #{ENV['TABLENAME']} WHERE id = $1"
-    params = [id]
-    execute_sql(sql, params)
+  def delete
+    sql = "DELETE FROM memo WHERE id = #{id}"
+    @@connection.exec_params(sql, nil)
   end
 
-  def self.update(text, id)
-    edited_memo = Memo.new(text)
-    sql = "UPDATE #{ENV['TABLENAME']} SET title = $1, description = $2 WHERE id = $3"
-    params = [edited_memo.title, edited_memo.description, id]
-    execute_sql(sql, params)
+  def update(title:, description:)
+    sql = "UPDATE memo SET title = $1, description = $2 WHERE id = #{id}"
+    params = [title, description]
+    @@connection.exec_params(sql, params)
   end
 end

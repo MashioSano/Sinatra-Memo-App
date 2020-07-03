@@ -1,6 +1,6 @@
 <form action="/memos/<%= params[:id] %>" method="post">
   <div class="form-group">
-    <textarea class="form-control" rows="7" name="text" placeholder="1行目がメモのタイトルになります"><%= @memo.title%><%= @memo.description%></textarea>
+    <textarea class="form-control" rows="7" name="text" placeholder="1行目がメモのタイトルになります"><%= @memo.title%>&#13;<%= @memo.description%></textarea>
   </div>
   <div>
     <input type="hidden" name="_method" value="patch"> 
